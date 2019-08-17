@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.roland.server.dao.UsersDao;
 import ru.roland.server.models.dto.CreateUserDto;
 
 import javax.validation.Valid;
@@ -18,13 +19,16 @@ import javax.validation.Valid;
 public class UsersController {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private UsersDao usersDao;
 
     @PostMapping(value = "/apiv1/users/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createUser(@RequestBody @Valid CreateUserDto createUserDto) {
-        jdbcTemplate.update("INSERT INTO users VALUES (?, ?, ?)",
-                createUserDto.getId(), createUserDto.getLogin(), createUserDto.getEmail());
-        return new ResponseEntity(HttpStatus.CREATED);
+        try {
+            usersDao.addUser(createUserDto);
+            return new ResponseEntity(HttpStatus.CREATED);
+        } catch(Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
