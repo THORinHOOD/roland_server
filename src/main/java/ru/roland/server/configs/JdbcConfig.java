@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 @ComponentScan("ru.roland.server")
 public class JdbcConfig {
 
+    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
+
     @Value("${roland.db.url}")
     private String dbUrl;
 
@@ -24,7 +26,7 @@ public class JdbcConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setDriverClassName(DRIVER_CLASS_NAME);
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUser);
         dataSource.setPassword(dbPassword);
